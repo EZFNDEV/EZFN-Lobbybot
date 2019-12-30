@@ -14,7 +14,7 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 > 3. Remix [this]() project (Make sure to have an account with Glitch so you'll be able to use the bot in the future)
 > 2. Click on your project name (top left) and make it PRIVATE!
 > 3. Open "Settings.json" and modify it as you want
-> 4. Click on Tools -> Logs and check if your Bot started
+> 4. Click on Tools -> Logs -> Console and type "refresh" wait until your Bot started!
 > 6. Then go to [bot-commands](https://discordapp.com/channels/629295115751522305/651093620753170432) and type your +Glitch_Project_URL, for example: +https://glitch.com/edit/#!/easyfnbot?path=Readme.md
 
 ## Features
