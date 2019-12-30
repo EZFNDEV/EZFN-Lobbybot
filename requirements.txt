@@ -1,0 +1,4 @@
+requests
+fortnitepy
+termcolor
+flask
