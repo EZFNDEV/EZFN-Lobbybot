@@ -10,6 +10,8 @@ async def Command(self, message):
     if self.Settings["Bot owner IDs"]:
         if not str(message.author.id) in self.Settings["Bot owner IDs"]:
             return
+        else:
+            HasFullAccess = True
     if str(message.author.id) in self.Settings["Give full access to"]:
         HasFullAccess = True
 
