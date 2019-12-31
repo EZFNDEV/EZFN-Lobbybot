@@ -8,6 +8,8 @@
 
 Please read everything before you start with this!
 
+[![Video](https://img.youtube.com/vi/geQONug5h_g/0.jpg)](https://www.youtube.com/watch?v=geQONug5h_g)
+
 You need an api-key to use the commands which changes the cosmetics of the bot,
 just go to https://fortnite-api.com/profile and register with your discord account (it is completly free!) then copy the key
 
