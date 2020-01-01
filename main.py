@@ -1,9 +1,11 @@
+import json,fortniteAPI,functions,MultipleClients,os,UpdateCheck
+from functools import partial
+from Events import ready,friends,party,message
+from threading import Thread
+
 try:
-    import fortnitepy,json,fortniteAPI,functions,MultipleClients,asyncio,os,UpdateCheck
-    from functools import partial
+    import fortnitepy,asyncio
     from termcolor import colored
-    from Events import ready,friends,party,message
-    from threading import Thread
     from flask import Flask
 except:
     os.system("pip3 install --user -r requirements.txt")
