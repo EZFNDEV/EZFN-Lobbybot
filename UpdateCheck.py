@@ -13,7 +13,7 @@ def CheckVersion():
                     GithubT = GithubT.replace(str(json.dumps(Github[Value])),str(json.dumps(Settings[Value])))
 
             with open("Settings.json","w+") as f:
-                f.write(Github)
+                f.write(str(GithubT))
             r = requests.get("https://github.com/LupusLeaks/EasyFNBotGlitch/releases/download/EasyFNBot/EasyFNBot.zip")
             z = zipfile.ZipFile(io.BytesIO(r.content))
             for fileName in z.namelist():
