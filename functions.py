@@ -13,40 +13,40 @@ async def SetCosmeticMSG(self,message):
 
     if args[0] == "!SKIN":
         Item = GetName("!SKIN",msg)
-        Item = await fortniteAPI.GetSkin(NameorId=Item,matchMethod="starts",searchLanguage=Lang,Language=Lang,apikey=self.fnkey)
+        Item = await fortniteAPI.GetSkin(Item,Lang)
     elif args[0] == "!BACKPACK":
         Item = GetName("!BACKPACK",msg)
-        Item = await fortniteAPI.GetBackpack(NameorId=Item,matchMethod="starts",searchLanguage=Lang,Language=Lang,apikey=self.fnkey)
+        Item = await fortniteAPI.GetBackpack(Item,Lang)
     elif args[0] == "!PICKAXE":
         Item = GetName("!PICKAXE",msg)
-        Item = await fortniteAPI.GetPickaxe(NameorId=Item,matchMethod="starts",searchLanguage=Lang,Language=Lang,apikey=self.fnkey)
+        Item = await fortniteAPI.GetPickaxe(Item,Lang)
     elif args[0] == "!EMOJI":
         Item = GetName("!EMOJI",msg)
-        Item = await fortniteAPI.GetEmoji(NameorId=Item,matchMethod="starts",searchLanguage=Lang,Language=Lang,apikey=self.fnkey)
+        Item = await fortniteAPI.GetEmoji(Item,Lang)
     elif args[0] == "!EMOTE":
         Item = GetName("!EMOTE",msg)
-        Item = await fortniteAPI.GetEmote(NameorId=Item,matchMethod="starts",searchLanguage=Lang,Language=Lang,apikey=self.fnkey)
+        Item = await fortniteAPI.GetEmote(Item,Lang)
            
-    if Item["status"] != 200:
+    if "status" in Item:
         await message.reply("Can't find this item")
         return
     else:
         v = []
         if msg.count("--") != 0:
-            if Item["data"]["variants"]: #Make sure that the item has variants
+            if Item["variants"][Lang]: #Make sure that the item has variants
                 for Variant in GetValues(msg):
                     VariantChannelName = (Variant.split("=")[0])[2:]
                     Variant = Variant.split("=")[1]
                         
-                    for variant in Item["data"]["variants"]:
+                    for variant in Item["variants"][Lang]:
                         if variant["type"].upper() == VariantChannelName:
                             for tag in variant["options"]:
                                 if tag["name"].upper() == Variant:
-                                    v.append(create_variant(variant["channel"],tag["tag"],item=Item["data"]["backendType"]))
+                                    v.append(create_variant(variant["channel"],tag["tag"],item=Item["backendType"]))
             else: #The item has no variants
                 await message.reply("Can't find any variants for this item")
             
-        asset=f'{str(Item["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Item["data"]["id"]}'
+        asset=f'{str(Item["path"]).replace("FortniteGame/Content","/Game")}.{Item["id"]}'
         if args[0] == "!SKIN":
             await self.user.party.me.set_outfit(asset=asset,variants=v)
         elif args[0] == "!BACKPACK":
@@ -58,7 +58,7 @@ async def SetCosmeticMSG(self,message):
         elif args[0] == "!EMOTE":
             await self.user.party.me.set_emote(asset=asset)
 
-        await message.reply(f'{Item["data"]["type"].capitalize()} set to {Item["data"]["name"]}')
+        await message.reply(f'{Item["type"].capitalize()} set to {Item["Names"][Lang]}')
 
 def GetName(Name,Message):
     if Message.count("--") != 0:

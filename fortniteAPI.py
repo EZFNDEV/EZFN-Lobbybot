@@ -1,4 +1,4 @@
-import aiohttp,requests
+import aiofiles,json
 FNAPI = "https://fortnite-api.com"
 
 def SetItem(self,Item):
@@ -7,113 +7,70 @@ def SetItem(self,Item):
     self.backendType = Item["backendType"]
     self.rarity = Item["rarity"]
     self.backendRarity = Item["backendRarity"]
-    self.name = Item["name"]
-    self.shortDescription = Item["shortDescription"]
-    self.description = Item["description"]
-    self.set = Item["set"]
-    self.series = Item["series"]
-    self.backendSeries = Item["backendSeries"]
-    self.images = Item["images"]
+    self.Names = Item["Names"]
     self.variants = Item["variants"]
-    self.gameplayTags = Item["gameplayTags"]
-    self.displayAssetPath = Item["displayAssetPath"]
-    self.definition = Item["definition"]
-    self.builtInEmoteId = Item["builtInEmoteId"]
-    self.requiredItemId = Item["requiredItemId"]
     self.path = Item["path"]
-    self.lastUpdate = Item["lastUpdate"]
-    self.added = Item["added"]
 
-async def getCosmetic(params,apikey):
-    async with aiohttp.ClientSession() as session:
-        NameID = params["NameorId"]
-        del params["NameorId"]
-        params["id"] = NameID
-        Cosmetics = await (await session.get(f"{FNAPI}/cosmetics/br/search/ids", params=params, headers={"x-api-key" : apikey})).json()
-        if Cosmetics["status"] != 200:
-            del params["id"]
-            params["name"] = NameID
-            Cosmetics = await (await session.get(f"{FNAPI}/cosmetics/br/search", params=params, headers={"x-api-key" : apikey})).json()
+async def getCosmetic(NameorId,Lang,Type):
+    Cosmetics = json.loads(await (await aiofiles.open('Items.json', mode='r')).read())
 
-        return Cosmetics
+    for Cosmetic in Cosmetics:
+        if Cosmetic["id"].lower() == NameorId.lower():
+            return Cosmetic
+        elif Cosmetic["Names"][Lang].lower() == NameorId.lower():
+            return Cosmetic
 
-def SgetCosmetic(params,apikey):
-    NameID = params["NameorId"]
-    del params["NameorId"]
-    params["id"] = NameID
-    Cosmetics = (requests.get(f"{FNAPI}/cosmetics/br/search/ids",params=params,headers={"x-api-key" : apikey})).json()
-    if Cosmetics["status"] != 200:
-        del params["id"]
-        params["name"] = NameID
-        Cosmetics = (requests.get(f"{FNAPI}/cosmetics/br/search", params=params, headers={"x-api-key" : apikey})).json()
-    return Cosmetics
+    for Cosmetic in Cosmetics:
+        if Cosmetic["id"].lower().startswith(NameorId.lower()):
+            return Cosmetic
+        elif Cosmetic["Names"][Lang].lower().startswith(NameorId.lower()):
+            return Cosmetic
 
-async def GetSkin(apikey,**kwargs):
-    params = {"backendType" : "AthenaCharacter"}
-    for key, value in kwargs.items():
-        params[key] = value
+    return '''{"status" : "404"}'''
 
-    return (await getCosmetic(params,apikey))
+def SgetCosmetic(NameorId,Lang,Type):
+    Cosmetics = json.loads(open("Items.json").read())
 
-async def GetBackpack(apikey,**kwargs):
-    params = {"backendType" : "AthenaBackpack"}
-    for key, value in kwargs.items():
-        params[key] = value
+    for Cosmetic in Cosmetics:
+        if Cosmetic["id"].lower() == NameorId.lower() and Type == Cosmetic["backendType"]:
+            return Cosmetic
+        elif Cosmetic["Names"][Lang].lower() == NameorId.lower() and Type == Cosmetic["backendType"]:
+            return Cosmetic
 
-    return (await getCosmetic(params,apikey))
+    for Cosmetic in Cosmetics:
+        if Cosmetic["id"].lower().startswith(NameorId.lower()) and Type == Cosmetic["backendType"]:
+            return Cosmetic
+        elif Cosmetic["Names"][Lang].lower().startswith(NameorId.lower()) and Type == Cosmetic["backendType"]:
+            return Cosmetic
 
-async def GetPickaxe(apikey,**kwargs):
-    params = {"backendType" : "AthenaPickaxe"}
-    for key, value in kwargs.items():
-        params[key] = value
+    return '''{"status" : "404"}'''
 
-    return (await getCosmetic(params,apikey))
+async def GetSkin(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaCharacter"))
 
-async def GetEmote(apikey,**kwargs):
-    params = {"backendType" : "AthenaDance"}
-    for key, value in kwargs.items():
-        params[key] = value
+async def GetBackpack(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaBackpack"))
 
-    return (await getCosmetic(params,apikey))
+async def GetPickaxe(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaPickaxe"))
 
-async def GetEmoji(apikey,**kwargs):
-    params = {"backendType" : "AthenaEmoji"}
-    for key, value in kwargs.items():
-        params[key] = value
+async def GetEmote(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaDance"))
 
-    return (await getCosmetic(params,apikey))
+async def GetEmoji(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaEmoji"))
 
-async def GetPet(apikey,**kwargs):
-    params = {"backendType" : "AthenaPetCarrier"}
-    for key, value in kwargs.items():
-        params[key] = value
+async def GetPet(NameorId,Lang="en"):
+    return (await getCosmetic(NameorId,Lang,"AthenaPetCarrier"))
 
+def SGetSkin(NameorId,Lang="en"):
+    return (SgetCosmetic(NameorId,Lang,"AthenaCharacter"))
 
+def SGetBackpack(NameorId,Lang="en"):
+    return (SgetCosmetic(NameorId,Lang,"AthenaBackpack"))
 
-def SGetSkin(apikey,**kwargs):
-    params = {"backendType" : "AthenaCharacter"}
-    for key, value in kwargs.items():
-        params[key] = value
+def SGetPickaxe(NameorId,Lang="en"):
+    return (SgetCosmetic(NameorId,Lang,"AthenaPickaxe"))
 
-    return SgetCosmetic(params,apikey)
-
-def SGetBackpack(apikey,**kwargs):
-    params = {"backendType" : "AthenaBackpack"}
-    for key, value in kwargs.items():
-        params[key] = value
-
-    return SgetCosmetic(params,apikey)
-
-def SGetPickaxe(apikey,**kwargs):
-    params = {"backendType" : "AthenaPickaxe"}
-    for key, value in kwargs.items():
-        params[key] = value
-
-    return SgetCosmetic(params,apikey)
-
-def SGetPet(apikey,**kwargs):
-    params = {"backendType" : "AthenaPetCarrier"}
-    for key, value in kwargs.items():
-        params[key] = value
-
-    return SgetCosmetic(params,apikey)
+def SGetPet(NameorId,Lang="en"):
+    return (SgetCosmetic(NameorId,Lang,"AthenaPetCarrier"))

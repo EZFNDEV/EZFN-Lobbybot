@@ -23,15 +23,15 @@ async def event_party_member_join(self, Member):
             
         #Emote
         if self.Settings["Default emote"]:
-            Emote = await fortniteAPI.GetEmote(NameorId=self.Settings["Default emote"],matchMethod="starts",searchLanguage="en",Language="en")
-            if Emote.status == 200:
-                await self.user.party.me.set_emote(Emote.id)
+            Emote = await fortniteAPI.GetEmote(self.Settings["Default emote"])
+            if not "status" in Emote:
+                await self.user.party.me.set_emote(asset=f'{str(Emote["path"]).replace("FortniteGame/Content","/Game")}.{Emote["id"]}')
 
         #Emoji
         if self.Settings["Default emoji"]:
-            Emoji = await fortniteAPI.GetEmoji(NameorId=self.Settings["Default emoji"],matchMethod="starts",searchLanguage="en",Language="en")
-            if Emoji.status == 200:
-                await self.user.party.me.set_emote(asset=f'{str(Emoji.path).replace("FortniteGame/Content","/Game")}.{Emoji.id}')
+            Emoji = await fortniteAPI.GetEmoji(self.Settings["Default emoji"])
+            if not "status" in Emoji:
+                await self.user.party.me.set_emote(asset=f'{str(Emoji["path"]).replace("FortniteGame/Content","/Game")}.{Emoji["id"]}')
     else:
         print(colored(f'[BOT {self.user.display_name}] [{TimeInUTC}] {Member.display_name} Joined the Party', "green"))
         await self.user.party.send(f"Welcome {Member.display_name}, join my Discord: https://discord.gg/jxgZH6Z or follow me on Twitter: @LupusLeaks if you need any help or want your own bot")

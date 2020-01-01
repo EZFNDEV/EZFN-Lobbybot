@@ -40,65 +40,65 @@ if Settings["Privacy"].upper() in fortnitepy.PartyPrivacy.__members__:
 #Cosmetics
 #Backpack
 if Settings["Default backpack"] and not Settings["Default pet"]:
-    Backpack = fortniteAPI.SGetBackpack(NameorId=Settings["Default backpack"],matchMethod="starts",searchLanguage=fortniteClient.DefaultLang,Language=fortniteClient.DefaultLang,apikey=fortniteClient.fnkey)
-    if Backpack["status"] == 200:
+    Backpack = fortniteAPI.SGetBackpack(Settings["Default backpack"],fortniteClient.DefaultLang)
+    if not "status" in Backpack:
         v = []
-        if Settings["Default backpack varaint channel name"] and Settings["Default backpack varaint name"] and Backpack["data"]["variants"]:
+        if Settings["Default backpack varaint channel name"] and Settings["Default backpack varaint name"] and Backpack["variants"]["en"]:
             VariantChannelName = Settings["Default backpack varaint channel name"].upper()
             Variant = Settings["Default backpack varaint name"].upper()
             
-            for variant in Backpack["data"]["variants"]:
+            for variant in Backpack["variants"]["en"]:
                 if variant["type"].upper() == VariantChannelName:
                     for tag in variant["options"]:
                         if tag["name"].upper() == Variant:
                             v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaBackpack"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Backpack["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Backpack["data"]["id"]}',variants=v))
+        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Backpack["path"]).replace("FortniteGame/Content","/Game")}.{Backpack["id"]}',variants=v))
 #Skin
 if Settings["Default skin"]:
-    Skin = fortniteAPI.SGetSkin(apikey=fortniteClient.fnkey,NameorId=Settings["Default skin"],matchMethod="starts",searchLanguage=fortniteClient.DefaultLang,Language=fortniteClient.DefaultLang)
-    if Skin["status"] == 200:
+    Skin = fortniteAPI.SGetSkin(Settings["Default skin"],fortniteClient.DefaultLang)
+    if not "status" in Skin:
         v = []
-        if Settings["Default skin varaint channel name"] and Settings["Default skin varaint name"] and Skin["data"]["variants"]:
+        if Settings["Default skin varaint channel name"] and Settings["Default skin varaint name"] and Skin["variants"]["en"]:
             VariantChannelName = Settings["Default skin varaint channel name"].upper()
             Variant = Settings["Default skin varaint name"].upper()
             
-            for variant in Skin["data"]["variants"]:
+            for variant in Skin["variants"]["en"]:
                 if variant["type"].upper() == VariantChannelName:
                     for tag in variant["options"]:
                         if tag["name"].upper() == Variant:
                             v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaCharacter"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_outfit,asset=f'{str(Skin["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Skin["data"]["id"]}',variants=v))
+        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_outfit,asset=f'{str(Skin["path"]).replace("FortniteGame/Content","/Game")}.{Skin["id"]}',variants=v))
 #Pickaxe
 if Settings["Default pickaxe"]:
-    Pickaxe = fortniteAPI.SGetPickaxe(apikey=fortniteClient.fnkey,NameorId=Settings["Default pickaxe"],matchMethod="starts",searchLanguage=fortniteClient.DefaultLang,Language=fortniteClient.DefaultLang)
-    if Pickaxe["status"] == 200:
+    Pickaxe = fortniteAPI.SGetPickaxe(Settings["Default pickaxe"],fortniteClient.DefaultLang)
+    if not "status" in Pickaxe:
         v = []
-        if Settings["Default pickaxe varaint channel name"] and Settings["Default pickaxe varaint name"] and Pickaxe["data"]["variants"]:
+        if Settings["Default pickaxe varaint channel name"] and Settings["Default pickaxe varaint name"] and Pickaxe["variants"]["en"]:
             VariantChannelName = Settings["Default pickaxe varaint channel name"].upper()
             Variant = Settings["Default pickaxe varaint name"].upper()
             
-            for variant in Pickaxe["data"]["variants"]:
+            for variant in Pickaxe["variants"]["en"]:
                 if variant["type"].upper() == VariantChannelName:
                     for tag in variant["options"]:
                         if tag["name"].upper() == Variant:
                             v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaPickaxe"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_pickaxe,asset=f'{str(Pickaxe["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Pickaxe["data"]["id"]}',variants=v))
+        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_pickaxe,asset=f'{str(Pickaxe["path"]).replace("FortniteGame/Content","/Game")}.{Pickaxe["id"]}',variants=v))
 
 #Pet
 if Settings["Default pet"]:
-    Pet = fortniteAPI.SGetPet(apikey=fortniteClient.fnkey,NameorId=Settings["Default pet"],matchMethod="starts",searchLanguage=fortniteClient.DefaultLang,Language=fortniteClient.DefaultLang)
-    if Pet["status"] == 200:
+    Pet = fortniteAPI.SGetPet(Settings["Default pet"],fortniteClient.DefaultLang)
+    if not "status" in Pet:
         v = []
-        if Settings["Default pet varaint channel name"] and Settings["Default pet varaint name"] and Pet["data"]["variants"]:
+        if Settings["Default pet varaint channel name"] and Settings["Default pet varaint name"] and Pet["variants"]["en"]:
             VariantChannelName = Settings["Default pet varaint channel name"].upper()
             Variant = Settings["Default pet varaint name"].upper()
             
-            for variant in Pickaxe["data"]["variants"]:
+            for variant in Pickaxe["variants"]["en"]:
                 if variant["type"].upper() == VariantChannelName:
                     for tag in variant["options"]:
                         if tag["name"].upper() == Variant:
                             v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaPetCarrier"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Pet["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Pet["data"]["id"]}',variants=v))
+        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Pet["path"]).replace("FortniteGame/Content","/Game")}.{Pet["id"]}',variants=v))
 
 fortniteClient.default_party_config = default_party
 fortniteClient.default_party_member_config = default_party_member
@@ -127,6 +127,9 @@ async def event_party_invite(invitation):
     await party.event_party_invite(fortniteClient, invitation)
 
 @fortniteClient.event
+async def event_party_member_join(Member):
+    await party.event_party_member_join(fortniteClient,Member)
+@fortniteClient.event
 async def event_party_member_promote(old_leader, new_leader):
     await party.event_party_member_promote(fortniteClient, old_leader,new_leader)
 
@@ -144,6 +147,7 @@ def Home():
     return "Follow @LupusLeaks on Twitter"
 Thread(target=app.run).start()
 Thread(target=UpdateCheck.CheckVersion).start()
+Thread(target=UpdateCheck.CheckItems).start()
 
 try:
     fortniteClient.run()
