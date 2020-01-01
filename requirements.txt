@@ -2,3 +2,4 @@ requests
 fortnitepy
 termcolor
 flask
+aiofiles
