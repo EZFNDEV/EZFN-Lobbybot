@@ -4,8 +4,8 @@
     "Email": "YOUR_EMAIL",
     "Password": "YOUR_PASSWORD",
     "SubAccounts" : {
-        "YOUR_EMAIL" : "YOUR_PASSWORD",
-        "YOUR_EMAIL2" : "YOUR_PASSWORD2"
+        "YOUR_SUB_EMAIL" : "YOUR_SUB_PASSWORD",
+        "YOUR_SUB_EMAIL2" : "YOUR_SUB_PASSWORD2"
     },
     "Give full access to": "",
     "Bot owner IDs": "",
