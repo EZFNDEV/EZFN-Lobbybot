@@ -4,7 +4,7 @@ from Events import ready,friends,party,message
 from threading import Thread
 
 try:
-    import fortnitepy,asyncio
+    import fortnitepy,asyncio,aiofiles
     from termcolor import colored
     from flask import Flask
 except:
