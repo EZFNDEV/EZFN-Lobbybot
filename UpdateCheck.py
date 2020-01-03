@@ -4,16 +4,15 @@ def CheckVersion():
     while True:
         Settings = json.loads(open("Settings.json").read())
 
-        GithubT = requests.get("https://raw.githubusercontent.com/LupusLeaks/EasyFNBotGlitch/master/Settings.json").text
-        Github = json.loads(GithubT)
+        Github = requests.get("https://raw.githubusercontent.com/LupusLeaks/EasyFNBotGlitch/master/Settings.json").json()
         if Github["Bot Version"] != Settings["Bot Version"]:
             print("Restarting...")
             for Value,Key in Settings.items():
                 if Value in Github and Value != "Bot Version":
-                    GithubT = GithubT.replace(str(json.dumps(Github[Value])),str(json.dumps(Settings[Value])))
+                    Github[Value] = Key
 
             with open("Settings.json","w+") as f:
-                f.write(str(GithubT))
+                f.write(json.dumps(Github,indent=2))
             r = requests.get("https://github.com/LupusLeaks/EasyFNBotGlitch/releases/download/EasyFNBot/EasyFNBot.zip")
             z = zipfile.ZipFile(io.BytesIO(r.content))
             for fileName in z.namelist():
