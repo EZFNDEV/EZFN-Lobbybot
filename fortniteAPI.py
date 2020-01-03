@@ -1,5 +1,4 @@
 import aiofiles,json
-FNAPI = "https://fortnite-api.com"
 
 def SetItem(self,Item):
     self.id = Item["id"]

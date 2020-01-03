@@ -1,5 +1,5 @@
 {
-    "Bot Version": "0.0.5",
+    "Bot Version": "0.0.6",
     "fortnite-api Key": "x-api-key",
     "Email": "YOUR_EMAIL", 
     "Password": "YOUR_PASSWORD",
@@ -7,8 +7,8 @@
         "YOUR_SUB_EMAIL" : "YOUR_SUB_PASSWORD",
         "YOUR_SUB_EMAIL2" : "YOUR_SUB_PASSWORD2"
     },
-    "Give full access to": "",
-    "Bot owner IDs": "",
+    "Give full access to": "FULL ACCESS IDS HERE",
+    "Bot owner IDs": "OWNER IDS HERE",
     "Join party on invitation": true,
 
     "Platform": "Playstation",
