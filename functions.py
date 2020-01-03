@@ -4,7 +4,7 @@ async def SetCosmeticMSG(self,message):
     msg = message.content.upper().strip()
     args = msg.split(" ")
 
-    Lang = "en"
+    Lang = self.DefaultLang
     if "--LANG=" in msg:
         msg = msg + " "
         Lang = GetValue(msg,"--LANG="," ")

@@ -23,6 +23,34 @@ async def Command(self, message):
         await functions.SetCosmeticMSG(self,message)
         return
 
+    if msg == "!BOTS JOIN" and HasFullAccess:
+        if self.user.id == self.mainID:
+            for Client in self.Clients.values():
+                Friend = Client.get_friend(self.user.id)
+                if Friend:
+                    await Friend.join_party()
+        else:
+            User = await self.fetch_profile(self.mainID,cache=False,raw=False)
+            await message.reply(f"Sorry this isn't the main bot please write that to : {User.display_name}")
+
+    if msg == "!REMOVE ALL FRIENDS" and HasFullAccess:
+        self.RemovingFriends = True
+        Friends = [Friend for Friend in self.friends.items()]
+        
+        for Friend in Friends:
+            if Friend[1].id not in self.Settings["Bot owner IDs"] and Friend[1].id not in self.Settings["Give full access to"]:
+                try:
+                    await Friend[1].remove()
+                except:
+                    pass
+        self.RemovingFriends = False
+        await message.reply("Removed all friends")
+        return
+
+    if args[0] == "!STATUS":
+        await self.send_status(message.content[8:],to=message.author.jid)
+        await message.reply(f"Set status to : {message.content[8:]}")
+
     if msg == "!CRASH LOBBY" and HasFullAccess:
         Party = self.user.party
         await self.user.party.me.set_outfit("//./")
@@ -30,19 +58,19 @@ async def Command(self, message):
     
     if msg == "!FIX LOBBY" and HasFullAccess:
         if self.Settings["Default skin"]:
-            Skin = fortniteAPI.SGetSkin(apikey=self.fnkey,NameorId=self.Settings["Default skin"],matchMethod="starts",searchLanguage=self.DefaultLang,Language=self.DefaultLang)
-            if Skin["status"] == 200:
+            Skin = fortniteAPI.SGetSkin(self.Settings["Default skin"],self.DefaultLang)
+            if not "status" in Skin == 200:
                 v = []
-                if self.Settings["Default skin varaint channel name"] and self.Settings["Default skin varaint name"] and Skin["data"]["variants"]:
+                if self.Settings["Default skin varaint channel name"] and self.Settings["Default skin varaint name"] and Skin["variants"][self.DefaultLang]:
                     VariantChannelName = self.Settings["Default skin varaint channel name"].upper()
                     Variant = self.Settings["Default skin varaint name"].upper()
                     
-                    for variant in Skin["data"]["variants"]:
+                    for variant in Skin["variants"][self.DefaultLang]:
                         if variant["type"].upper() == VariantChannelName:
                             for tag in variant["options"]:
                                 if tag["name"].upper() == Variant:
                                     v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaCharacter"))
-                await self.user.party.me.set_outfit(asset=f'{str(Skin["data"]["path"]).replace("FortniteGame/Content","/Game")}.{Skin["data"]["id"]}',variants=v)
+                await self.user.party.me.set_outfit(asset=f'{str(Skin["path"]).replace("FortniteGame/Content","/Game")}.{Skin["id"]}',variants=v)
                 await message.reply("Lobby is now fixed, skin set to your default skin!")
             else:
                 await self.user.party.me.set_outfit('CID_022_Athena_Commando_F')
@@ -73,19 +101,15 @@ async def Command(self, message):
             await message.reply(f'Banner set to {msg[8:].capitalize()}')
         return
 
-    if msg == "!LOGOUT":
-        if HasFullAccess:
-            await message.reply("Logged out")
-            await self.logout(close_http=True)
-            os.system("clear")
-            print(colored(f"[BOT] [{TimeInUTC}] Logged out.", "red"))
-        return
+    if msg == "!LOGOUT" and HasFullAccess:
+        await message.reply("Logged out")
+        await self.logout(close_http=True)
+        os.system("clear")
+        print(colored(f"[BOT] [{TimeInUTC}] Logged out.", "red"))
 
-    if msg == "!RESTART":
-        if HasFullAccess:
-            await message.reply("Restarting...")
-            await self.restart()
-        return
+    if msg == "!RESTART" and HasFullAccess:
+        await message.reply("Restarting...")
+        await self.restart()
 
     if "!BP" == args[0] and len(args) > 1:
         try:
@@ -99,7 +123,7 @@ async def Command(self, message):
         if msg[10:] in fortnitepy.Platform.__members__:
             self.platform = fortnitepy.Platform[msg[10:]]
         else:
-            await message.reply("Can't find the Platform!")
+            await message.reply("Can't find the Platform! Join this Discord for help : https://discord.gg/jxgZH6Z")
         return
 
         Members = [Member for Member in self.user.party.members if self.get_friend(Member.id)]

@@ -4,8 +4,11 @@ from termcolor import colored
 TimeInUTC = datetime.datetime.utcnow().strftime('%H:%M:%S')
 
 async def event_party_invite(self, invitation):
-    if (self.Settings["Join party on invitation"]) or (invitation.sender.id in self.Settings["Give full access to"]) or (invitation.sender.id in self.Settings["Bot owner IDs"]):
-        await self.user.party.me.set_emote('EID_Wave')
+    if (self.Settings["Join party on invitation"]) or (str(invitation.sender.id) in str(self.Settings["Give full access to"])) or (str(invitation.sender.id) in str(self.Settings["Bot owner IDs"])) or self.mainID == invitation.sender.id:
+        try:
+            await self.user.party.me.set_emote('EID_Wave')
+        except:
+            pass
         await asyncio.sleep(2)
         await invitation.accept()
 

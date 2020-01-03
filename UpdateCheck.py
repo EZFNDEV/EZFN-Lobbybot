@@ -26,7 +26,7 @@ def CheckVersion():
 def CheckItems():
     while True:
         Settings = json.loads(open("Settings.json").read())
-        Cosmetics = requests.get("https://fortnite-api.com/cosmetics/br?language=en",headers={"x-api-key": Settings["fortnite-api Key"],"User-Agent": "EasyFNBot/0.0.2"}).json()
+        Cosmetics = requests.get("https://fortnite-api.com/cosmetics/br?language=en",headers={"x-api-key": Settings["fortnite-api Key"],"User-Agent": f'EasyFNBot/{Settings["Bot Version"]}'}).json()
 
         if Cosmetics["status"] == 200:
             StoredEnglishCosmetics = json.loads(open("Itemsen.json").read())
@@ -40,7 +40,7 @@ def CheckItems():
                     Items.append({"Names" : {"en" : Cosmetic["name"]},"id" : Cosmetic["id"],"type" : Cosmetic["type"],"backendType" : Cosmetic["backendType"],"rarity" : Cosmetic["rarity"],"backendRarity" : Cosmetic["backendRarity"],"variants" : {"en" : Cosmetic["variants"]},"path" : Cosmetic["path"]})
             
                 for lang in ["ar","de","es-419","es","fr","it","ja","ko","pl","pt-BR","ru","tr","zh-CN","zh-Hant"]:
-                    r = requests.get(f"https://fortnite-api.com/cosmetics/br?language={lang}",headers={"x-api-key": Settings["fortnite-api Key"],"User-Agent": "EasyFNBot/0.0.2"}).json()["data"]
+                    r = requests.get(f"https://fortnite-api.com/cosmetics/br?language={lang}",headers={"x-api-key": Settings["fortnite-api Key"],"User-Agent": f'EasyFNBot/{Settings["Bot Version"]}'}).json()["data"]
                     if ItemCount == len(r):
                         for idx,item in enumerate(r):
                             Items[idx]["Names"][lang] = item["name"]

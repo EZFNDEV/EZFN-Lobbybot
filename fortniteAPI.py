@@ -15,15 +15,15 @@ async def getCosmetic(NameorId,Lang,Type):
     Cosmetics = json.loads(await (await aiofiles.open('Items.json', mode='r')).read())
 
     for Cosmetic in Cosmetics:
-        if Cosmetic["id"].lower() == NameorId.lower():
+        if Cosmetic["id"].lower() == NameorId.lower() and Type == Cosmetic["backendType"]:
             return Cosmetic
-        elif Cosmetic["Names"][Lang].lower() == NameorId.lower():
+        elif Cosmetic["Names"][Lang].lower() == NameorId.lower() and Type == Cosmetic["backendType"]:
             return Cosmetic
 
     for Cosmetic in Cosmetics:
-        if Cosmetic["id"].lower().startswith(NameorId.lower()):
+        if Cosmetic["id"].lower().startswith(NameorId.lower()) and Type == Cosmetic["backendType"]:
             return Cosmetic
-        elif Cosmetic["Names"][Lang].lower().startswith(NameorId.lower()):
+        elif Cosmetic["Names"][Lang].lower().startswith(NameorId.lower()) and Type == Cosmetic["backendType"]:
             return Cosmetic
 
     return '''{"status" : "404"}'''

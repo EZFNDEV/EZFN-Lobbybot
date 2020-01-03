@@ -8,7 +8,7 @@
 
 Please read everything before you start with this!
 
-[Video](https://www.youtube.com/watch?v=geQONug5h_g)
+[Video Tutorial](https://www.youtube.com/watch?v=geQONug5h_g)
 
 You need an api-key to use the commands which changes the cosmetics of the bot,
 just go to https://fortnite-api.com/profile and register with your discord account (it is completly free!) then copy the key
@@ -30,19 +30,20 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 ## Settings
 ```
 {
-    "Bot Version": "0.0.1",
+    "Bot Version": "0.0.5",
     "fortnite-api Key": "x-api-key",
     "Email": "YOUR_EMAIL", 
     "Password": "YOUR_PASSWORD",
     "SubAccounts" : {
-        "YOUR_EMAIL" : "YOUR_PASSWORD", #If you want multiple bots       "YOUR_EMAIL2" : "YOUR_PASSWORD2" #You can put as much emails as you want here
+        "YOUR_EMAIL" : "YOUR_PASSWORD", #If you want multiple bots
+        "YOUR_EMAIL2" : "YOUR_PASSWORD2" #You can put as much emails as you want here
     },
     "Give full access to": "", #The Account IDs you want give full access to, split multiple with "," to get the acount ids write ?id AccountName in the bot-commands channel on discord
     "Bot owner IDs": "", #None else as users with the Account IDs here can use the bot!
     "Join party on invitation": true, #If false, the bot won't join others on invitation
 
-    "Platform": "Playstation", #The Platform the bot should be on
-    "Privacy": "Public", #The bots privacy
+    "Platform": "Playstation", #The Platform the bot should be on (Windows,Mac,Playstation,xBox,Switch,iOS,Android)
+    "Privacy": "Public", #The bots privacy (Public,Friends_allow_friends_of_friends,Friends,Private_allow_friends_of_friends,Private)
 
     "Default season level": 1000, #The season level the bot should be on
     "Default banner": "OtherBanner28", #The banner the bot will use if he joins a party

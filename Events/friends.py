@@ -15,6 +15,8 @@ async def event_friend_add(self, Friend):
         await Friend.send("Thanks for adding my bot, if you want to make your own bot or need any help follow @LupusLeaks on Twitter on join my Discord https://discord.gg/jxgZH6Z")
 
 async def event_friend_remove(self, Friend):
+    if self.RemovingFriends:
+        return
     if self.Settings["Send friend request on friend removed"] or Friend.id in self.Settings["Give full access to"]:
         try:
             await self.add_friend(Friend.id)
@@ -25,5 +27,5 @@ async def event_friend_remove(self, Friend):
         print(colored(f'[BOT {self.user.display_name}] [{TimeInUTC}] {Friend.display_name} removed you as a friend', "red"))
 
 async def event_friend_request(self, Friend):
-    if self.Settings["Accept incoming friend request"] or Friend.id in self.Settings["Give full access to"]:
+    if self.Settings["Accept incoming friend request"] or Friend.id in self.Settings["Give full access to"] or Friend.id == self.mainID:
         await Friend.accept()

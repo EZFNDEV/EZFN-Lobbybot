@@ -14,9 +14,9 @@ Settings = json.loads(open("Settings.json").read())
 Languages = ["ar","de","es-419","es","en","fr","it","ja","ko","pl","pt-BR","ru","tr","zh-CN","zh-Hant"]
 fortniteClient = fortnitepy.Client(email=Settings["Email"],password=Settings["Password"],status="Join my Discord\nIf you want your own bot\nhttps://discord.gg/jxgZH6Z\nOr Follow me on Twitter\n@LupusLeaks")
 fortniteClient.Settings = Settings
+fortniteClient.Clients = {}
 default_party_member = []
 default_party = {}
-fortniteClient.fnkey = Settings["fortnite-api Key"] #Set the fortnite-api.com api key
 
 #Default language
 if Settings["Default item search language"] in Languages:
@@ -37,7 +37,7 @@ default_party_member.append(partial(fortnitepy.ClientPartyMember.set_banner,seas
 if Settings["Platform"].upper() in fortnitepy.Platform.__members__:
     fortniteClient.platform = fortnitepy.Platform[Settings["Platform"].upper()]
 if Settings["Privacy"].upper() in fortnitepy.PartyPrivacy.__members__:
-    default_party["Privacy"] = fortnitepy.PartyPrivacy[Settings["Privacy"].upper()]
+    default_party["privacy"] = fortnitepy.PartyPrivacy[Settings["Privacy"].upper()]
 
 #Cosmetics
 #Backpack
@@ -107,9 +107,23 @@ fortniteClient.default_party_member_config = default_party_member
 
 @fortniteClient.event
 async def event_ready():
+    fortniteClient.mainID = fortniteClient.user.id
+    tasks = []
     for email,password in Settings["SubAccounts"].items():
         if "@" in email:
-            fortniteClient.loop.create_task(MultipleClients.LoadAccount(fortniteClient,email,password,fortniteClient.platform,fortniteClient.default_party_member_config,Settings))
+            tasks.append(MultipleClients.LoadAccount(fortniteClient,email,password))
+    if len(tasks) > 0:
+        print("Starting sub accounts!")
+        await asyncio.wait(tasks)
+    
+    for Client in fortniteClient.Clients.values():
+        Friends = fortniteClient.has_friend(Client.user.id)
+        if not Friends:
+            try:
+                await fortniteClient.add_friend(Client.user.id)
+            except:
+                pass
+
     await ready.Ready(fortniteClient)
 
 @fortniteClient.event
@@ -131,6 +145,7 @@ async def event_party_invite(invitation):
 @fortniteClient.event
 async def event_party_member_join(Member):
     await party.event_party_member_join(fortniteClient,Member)
+
 @fortniteClient.event
 async def event_party_member_promote(old_leader, new_leader):
     await party.event_party_member_promote(fortniteClient, old_leader,new_leader)

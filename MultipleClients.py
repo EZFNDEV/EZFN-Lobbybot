@@ -2,10 +2,16 @@ import fortnitepy,json,functions
 
 from Events import ready,friends,party,message
 
-async def LoadAccount(fortniteClient,Email,Password,Platform,default_party_member_config,Settings):
-    client = fortnitepy.Client(email=Email,password=Password,platform=Platform,default_party_member_config=default_party_member_config,status="Join my Discord\nIf you want your own bot\nhttps://discord.gg/jxgZH6Z\nOr Follow me on Twitter\n@LupusLeaks")
-    client.Settings = Settings
-    client.fnkey = fortniteClient.fnkey
+async def LoadAccount(fnClient,Email,Password):
+    client = fortnitepy.Client(email=Email,password=Password,platform=fnClient.platform,default_party_member_config=fnClient.default_party_member_config,status=fnClient.status,loop=fnClient.loop)
+    client.Settings = fnClient.Settings
+    client.DefaultLang = fnClient.DefaultLang
+    client.mainID = fnClient.mainID
+
+    fnClient.loop.create_task(client.start())
+    await client.wait_until_ready()
+
+    fnClient.Clients[client.user.id] = client
 
     @client.event
     async def event_ready():
@@ -32,12 +38,13 @@ async def LoadAccount(fortniteClient,Email,Password,Platform,default_party_membe
         await party.event_party_member_promote(client, old_leader,new_leader)
 
     @client.event
+    async def event_party_member_join(Member):
+        await party.event_party_member_join(client,Member)
+
+    @client.event
     async def event_friend_message(Message):
         await message.Command(client, Message)
 
     @client.event
     async def event_party_message(Message):
         await message.Command(client, Message)
-
-    await client.start()
-    await client.wait_until_ready()
