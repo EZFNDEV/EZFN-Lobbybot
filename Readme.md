@@ -13,7 +13,7 @@ Please read everything before you start with this!
 You need an api-key to use the commands which changes the cosmetics of the bot,
 just go to https://fortnite-api.com/profile and register with your discord account (it is completly free!) then copy the key
 
-> 1. Join [our](https://discord.gg/jxgZH6Z) Discord Server and accept the [rules](https://discordapp.com/channels/629295115751522305/650942209755185182)
+> 1. Join [our](https://discord.gg/jxgZH6Z) Discord Server
 > 2. If you want to get the epic id of a user write ?id <UserName> in [bot-commands](https://discordapp.com/channels/629295115751522305/651093620753170432) (Can be used for "Give full access to" or "Bot owner IDs")
 > 3. Remix [this](https://glitch.com/edit/#!/easyfnbot) project (Make sure to have an account with Glitch so you'll be able to use the bot in the future)
 > 2. Click on your project name (top left) and make it PRIVATE!
