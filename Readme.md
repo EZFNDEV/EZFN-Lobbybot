@@ -84,7 +84,13 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 ### Give full access only  
 > !Crash Lobby  
 > The game of all party members(also new members who try to join) will crash  
-  
+
+> !Remove all friends
+> All friends which doesn't have Full Access will be removed
+
+> !Bots join
+> If you are running multiple bots, this will invite all bots into your lobby if its public and you write to the main account
+
 > !Fix Lobby  
 > The game won't crash anymore if you wrote !Crash Lobby before  
   
