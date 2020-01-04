@@ -7,6 +7,7 @@ async def LoadAccount(fnClient,Email,Password):
     client.Settings = fnClient.Settings
     client.DefaultLang = fnClient.DefaultLang
     client.mainID = fnClient.mainID
+    client.starting = True
 
     fnClient.loop.create_task(client.start())
     await client.wait_until_ready()

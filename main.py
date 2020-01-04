@@ -118,6 +118,7 @@ async def event_ready():
         await asyncio.wait(tasks)
     
     for Client in fortniteClient.Clients.values():
+        Client.starting = False
         Friends = fortniteClient.has_friend(Client.user.id)
         if not Friends:
             try:
