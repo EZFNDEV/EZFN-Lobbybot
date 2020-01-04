@@ -107,6 +107,7 @@ fortniteClient.default_party_member_config = default_party_member
 
 @fortniteClient.event
 async def event_ready():
+    fortniteClient.starting = True
     fortniteClient.mainID = fortniteClient.user.id
     tasks = []
     for email,password in Settings["SubAccounts"].items():
@@ -125,6 +126,7 @@ async def event_ready():
                 pass
 
     await ready.Ready(fortniteClient)
+    fortniteClient.starting = False
 
 @fortniteClient.event
 async def event_friend_add(friend):

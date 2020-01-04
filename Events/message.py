@@ -5,6 +5,8 @@ from termcolor import colored
 CosmeticCommands = ["!SKIN","!BACKPACK","!PICKAXE","!EMOJI","!EMOTE"]
 
 async def Command(self, message):
+    if self.starting:
+        return
     HasFullAccess = False
     TimeInUTC = datetime.datetime.utcnow().strftime('%H:%M:%S')
     if self.Settings["Bot owner IDs"]:
