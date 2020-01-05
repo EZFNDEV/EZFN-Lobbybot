@@ -82,9 +82,6 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 > "*" means that it is optional  
 > You can find everything you need to set variants if you type ?skin <Skin Name> in my Discord [bot-commands](https://discordapp.com/channels/629295115751522305/651093620753170432)  
 ### Give full access only  
-> !Crash Lobby  
-> The game of all party members(also new members who try to join) will crash  
-
 > !Remove all friends
 > All friends which doesn't have Full Access will be removed
 
