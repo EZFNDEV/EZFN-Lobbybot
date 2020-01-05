@@ -82,12 +82,12 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 > "*" means that it is optional  
 > You can find everything you need to set variants if you type ?skin <Skin Name> in my Discord [bot-commands](https://discordapp.com/channels/629295115751522305/651093620753170432)  
 ### Give full access only  
-> !Remove all friends
+> !Remove all friends  
 > All friends which doesn't have Full Access will be removed
 
-> !Bots join
-> If you are running multiple bots, this will invite all bots into your lobby if its public and you write to the main account
-
+> !Bots join  
+> If you are running multiple bots, this will invite all bots into your lobby if its public and you write to the main account  
+  
 > !Fix Lobby  
 > The game won't crash anymore if you wrote !Crash Lobby before  
   
