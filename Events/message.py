@@ -53,11 +53,6 @@ async def Command(self, message):
         await self.send_status(message.content[8:],to=message.author.jid)
         await message.reply(f"Set status to : {message.content[8:]}")
 
-    if msg == "!CRASH LOBBY" and HasFullAccess:
-        Party = self.user.party
-        await self.user.party.me.set_outfit("//./")
-        await message.reply(f'Crashed lobby with {Party.member_count} members!')
-    
     if msg == "!FIX LOBBY" and HasFullAccess:
         if self.Settings["Default skin"]:
             Skin = fortniteAPI.SGetSkin(self.Settings["Default skin"],self.DefaultLang)
@@ -369,7 +364,7 @@ async def Command(self, message):
     if args[0] == "!PRIVACY" and len(args) > 1:
         if self.user.party.leader.id == self.user.id:
             if msg[9:] in fortnitepy.PartyPrivacy.__members__:
-                await self.user.party.me.set_privacy(fortnitepy.PartyPrivacy[msg[9:]])
+                await self.user.party.set_privacy(fortnitepy.PartyPrivacy[msg[9:]])
                 await message.reply(f'Privacy set to {msg[9:].capitalize()}')
             else:
                 await message.reply("Invaild Privacy, follow @LupusLeaks on Twitter or join my Discord: https://discord.gg/jxgZH6Z to get help")

@@ -8,7 +8,7 @@
 
 Please read everything before you start with this!
 
-[Video Tutorial](https://www.youtube.com/watch?v=geQONug5h_g)
+[Video Tutorial](https://www.youtube.com/watch?v=7mesWioqolM)
 
 You need an api-key to use the commands which changes the cosmetics of the bot,
 just go to https://fortnite-api.com/profile and register with your discord account (it is completly free!) then copy the key
@@ -30,7 +30,7 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 ## Settings
 ```
 {
-    "Bot Version": "0.0.9",
+    "Bot Version": "1.0.0",
     "fortnite-api Key": "x-api-key",
     "Email": "YOUR_EMAIL", 
     "Password": "YOUR_PASSWORD",

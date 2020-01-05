@@ -15,6 +15,7 @@ Languages = ["ar","de","es-419","es","en","fr","it","ja","ko","pl","pt-BR","ru",
 fortniteClient = fortnitepy.Client(email=Settings["Email"],password=Settings["Password"],status="Join my Discord\nIf you want your own bot\nhttps://discord.gg/jxgZH6Z\nOr Follow me on Twitter\n@LupusLeaks")
 fortniteClient.Settings = Settings
 fortniteClient.Clients = {}
+fortniteClient.RemovingFriends = False
 default_party_member = []
 default_party = {}
 
@@ -118,13 +119,13 @@ async def event_ready():
         await asyncio.wait(tasks)
     
     for Client in fortniteClient.Clients.values():
-        Client.starting = False
         Friends = fortniteClient.has_friend(Client.user.id)
         if not Friends:
             try:
                 await fortniteClient.add_friend(Client.user.id)
             except:
                 pass
+        Client.starting = False
 
     await ready.Ready(fortniteClient)
     fortniteClient.starting = False
