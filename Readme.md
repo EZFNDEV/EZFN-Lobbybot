@@ -30,7 +30,7 @@ just go to https://fortnite-api.com/profile and register with your discord accou
 ## Settings
 ```
 {
-    "Bot Version": "1.0.0",
+    "Bot Version": "1.0.1",
     "fortnite-api Key": "x-api-key",
     "Email": "YOUR_EMAIL", 
     "Password": "YOUR_PASSWORD",
