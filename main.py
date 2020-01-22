@@ -1,176 +1,236 @@
-import json,fortniteAPI,functions,MultipleClients,os,UpdateCheck
-from functools import partial
-from Events import ready,friends,party,message
-from threading import Thread
 
-try:
-    import fortnitepy,asyncio,aiofiles
-    from termcolor import colored
-    from flask import Flask
-except:
-    os.system("pip3 install --user -r requirements.txt")
+import json
+import asyncio
+import fortnitepy
+import sys
+import os
 
-Settings = json.loads(open("Settings.json").read())
-Languages = ["ar","de","es-419","es","en","fr","it","ja","ko","pl","pt-BR","ru","tr","zh-CN","zh-Hant"]
-fortniteClient = fortnitepy.Client(email=Settings["Email"],password=Settings["Password"],status="Join my Discord\nIf you want your own bot\nhttps://discord.gg/jxgZH6Z\nOr Follow me on Twitter\n@LupusLeaks")
-fortniteClient.Settings = Settings
-fortniteClient.Clients = {}
-fortniteClient.RemovingFriends = False
-default_party_member = []
-default_party = {}
+import Config
+import MultipleClients
+from Webserver import Check
+from Fortnite import DefaultCosmetics
+from Fortnite.Events import party,friends,message
 
-#Default language
-if Settings["Default item search language"] in Languages:
-    fortniteClient.DefaultLang = Settings["Default item search language"].lower()
-else:
-    print(f'ERROR: Couldn\'t find {Settings["DefaultItemSearchLanguage"]} as a language')
-    fortniteClient.DefaultLang = "en"
+import sanic
+from sanic import Sanic,response,request
 
-#Banner
-SeasonLevel=1000
-if Settings["Default season level"] and type(Settings["Default season level"]) == int:
-    SeasonLevel = Settings["Default season level"]
-else:
-    print(f'ERROR: {Settings["Default season level"]} is invaild, make sure you only use numbers')
-default_party_member.append(partial(fortnitepy.ClientPartyMember.set_banner,season_level=SeasonLevel,icon=Settings["Default banner"],color=Settings["Default banner color"]))
+OldSettings = json.loads(open("Settings.json").read())
+New = {}
+if OldSettings["Bot Version"] == "1.0.3" and not "Account" in OldSettings:
+    New["Bot Version"] = "1.0.3"
+    New["Default item search language"] = OldSettings["Default item search language"]
+    New["Secret Password"] = OldSettings["Password"]
 
-#Platform + Privacy
-if Settings["Platform"].upper() in fortnitepy.Platform.__members__:
-    fortniteClient.platform = fortnitepy.Platform[Settings["Platform"].upper()]
-if Settings["Privacy"].upper() in fortnitepy.PartyPrivacy.__members__:
-    default_party["privacy"] = fortnitepy.PartyPrivacy[Settings["Privacy"].upper()]
+    New["Account"] = {}
+    New["Account"]["Email"] = OldSettings["Email"]
+    New["Account"]["Password"] = OldSettings["Password"]
+    New["Account"]["Sub Accounts"] = OldSettings["SubAccounts"]
 
-#Cosmetics
-#Backpack
-if Settings["Default backpack"] and not Settings["Default pet"]:
-    Backpack = fortniteAPI.SGetBackpack(Settings["Default backpack"],fortniteClient.DefaultLang)
-    if not "status" in Backpack:
-        v = []
-        if Settings["Default backpack varaint channel name"] and Settings["Default backpack varaint name"] and Backpack["variants"]["en"]:
-            VariantChannelName = Settings["Default backpack varaint channel name"].upper()
-            Variant = Settings["Default backpack varaint name"].upper()
-            
-            for variant in Backpack["variants"]["en"]:
-                if variant["type"].upper() == VariantChannelName:
-                    for tag in variant["options"]:
-                        if tag["name"].upper() == Variant:
-                            v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaBackpack"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Backpack["path"]).replace("FortniteGame/Content","/Game")}.{Backpack["id"]}',variants=v))
-#Skin
-if Settings["Default skin"]:
-    Skin = fortniteAPI.SGetSkin(Settings["Default skin"],fortniteClient.DefaultLang)
-    if not "status" in Skin:
-        v = []
-        if Settings["Default skin varaint channel name"] and Settings["Default skin varaint name"] and Skin["variants"]["en"]:
-            VariantChannelName = Settings["Default skin varaint channel name"].upper()
-            Variant = Settings["Default skin varaint name"].upper()
-            
-            for variant in Skin["variants"]["en"]:
-                if variant["type"].upper() == VariantChannelName:
-                    for tag in variant["options"]:
-                        if tag["name"].upper() == Variant:
-                            v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaCharacter"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_outfit,asset=f'{str(Skin["path"]).replace("FortniteGame/Content","/Game")}.{Skin["id"]}',variants=v))
-#Pickaxe
-if Settings["Default pickaxe"]:
-    Pickaxe = fortniteAPI.SGetPickaxe(Settings["Default pickaxe"],fortniteClient.DefaultLang)
-    if not "status" in Pickaxe:
-        v = []
-        if Settings["Default pickaxe varaint channel name"] and Settings["Default pickaxe varaint name"] and Pickaxe["variants"]["en"]:
-            VariantChannelName = Settings["Default pickaxe varaint channel name"].upper()
-            Variant = Settings["Default pickaxe varaint name"].upper()
-            
-            for variant in Pickaxe["variants"]["en"]:
-                if variant["type"].upper() == VariantChannelName:
-                    for tag in variant["options"]:
-                        if tag["name"].upper() == Variant:
-                            v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaPickaxe"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_pickaxe,asset=f'{str(Pickaxe["path"]).replace("FortniteGame/Content","/Game")}.{Pickaxe["id"]}',variants=v))
+    New["Control"] = {}
+    New["Control"]["Give full access to"] = OldSettings["Give full access to"]
+    New["Control"]["Bot owner IDs"] = OldSettings["Bot owner IDs"]
 
-#Pet
-if Settings["Default pet"]:
-    Pet = fortniteAPI.SGetPet(Settings["Default pet"],fortniteClient.DefaultLang)
-    if not "status" in Pet:
-        v = []
-        if Settings["Default pet varaint channel name"] and Settings["Default pet varaint name"] and Pet["variants"]["en"]:
-            VariantChannelName = Settings["Default pet varaint channel name"].upper()
-            Variant = Settings["Default pet varaint name"].upper()
-            
-            for variant in Pickaxe["variants"]["en"]:
-                if variant["type"].upper() == VariantChannelName:
-                    for tag in variant["options"]:
-                        if tag["name"].upper() == Variant:
-                            v.append(functions.create_variant(variant["channel"],tag["tag"],item="AthenaPetCarrier"))
-        default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Pet["path"]).replace("FortniteGame/Content","/Game")}.{Pet["id"]}',variants=v))
+    New["Party"] = {"Cosmetics":{"Banner":{}}}
+    New["Party"]["Cosmetics"]["Skin"] = OldSettings["Default skin"]
+    New["Party"]["Cosmetics"]["Backpack"] = OldSettings["Default backpack"]
+    New["Party"]["Cosmetics"]["Pet"] = OldSettings["Default pet"]
+    New["Party"]["Cosmetics"]["Pickaxe"] = OldSettings["Default pickaxe"]
+    New["Party"]["Cosmetics"]["Emote"] = OldSettings["Default emote"]
+    New["Party"]["Cosmetics"]["Emoji"] = OldSettings["Default emoji"]
+    New["Party"]["Cosmetics"]["Banner"]["Banner Color"] = OldSettings["Default banner color"]
+    New["Party"]["Cosmetics"]["Banner"]["Banner Name"] = OldSettings["Default banner"]
+    New["Party"]["Cosmetics"]["Banner"]["Season Level"] = OldSettings["Default season level"]
+    New["Party"]["Privacy"] = OldSettings["Privacy"]
+    New["Party"]["Platform"] = OldSettings["Platform"]
+    New["Party"]["Join party on invitation"] = OldSettings["Join party on invitation"]
 
-fortniteClient.default_party_config = default_party
-fortniteClient.default_party_member_config = default_party_member
+    New["Friends"] = {}
+    New["Friends"]["Accept all friend requests"] = OldSettings["Accept all friend requests"]
+    New["Friends"]["Accept incoming friend requests"] = OldSettings["Accept incoming friend request"]
+    New["Friends"]["Invite friend on friend added"] = OldSettings["Invite friend on friend added"]
+    New["Friends"]["Send friend request on friend removed"] = OldSettings["Send friend request on friend removed"]
+    open("Settings.json","w+").write(json.dumps(New,indent=2))
 
-@fortniteClient.event
-async def event_ready():
-    fortniteClient.starting = True
-    fortniteClient.mainID = fortniteClient.user.id
-    tasks = []
-    for email,password in Settings["SubAccounts"].items():
-        if "@" in email:
-            tasks.append(MultipleClients.LoadAccount(fortniteClient,email,password))
-    if len(tasks) > 0:
-        print("Starting sub accounts!")
-        await asyncio.wait(tasks)
-    
-    for Client in fortniteClient.Clients.values():
-        Friends = fortniteClient.has_friend(Client.user.id)
-        if not Friends:
-            try:
-                await fortniteClient.add_friend(Client.user.id)
-            except:
-                pass
-        Client.starting = False
+ClientSettings = Config.ConfigReader(json.loads(open("Settings.json").read()))
 
-    await ready.Ready(fortniteClient)
-    fortniteClient.starting = False
+app = Sanic('EasyFNBot')
+fnClient = fortnitepy.Client(email=None,password=None)
+fnClient.Clients = {}
+fnClient.tasks = []
+fnClient.Randomizing = False
+fnClient.starting = True
+fnClient.RemovingFriends = False
 
-@fortniteClient.event
+@fnClient.event
 async def event_friend_add(friend):
-    await friends.event_friend_add(fortniteClient, friend)
+    await friends.event_friend_add(fnClient, friend)
     
-@fortniteClient.event
+@fnClient.event
 async def event_friend_remove(friend):
-    await friends.event_friend_remove(fortniteClient, friend)
+    await friends.event_friend_remove(fnClient, friend)
 
-@fortniteClient.event
+@fnClient.event
 async def event_friend_request(friend):
-    await friends.event_friend_request(fortniteClient, friend)
+    await friends.event_friend_request(fnClient, friend)
 
-@fortniteClient.event
+@fnClient.event
 async def event_party_invite(invitation):
-    await party.event_party_invite(fortniteClient, invitation)
+    await party.event_party_invite(fnClient, invitation)
 
-@fortniteClient.event
+@fnClient.event
 async def event_party_member_join(Member):
-    await party.event_party_member_join(fortniteClient,Member)
+    await party.event_party_member_join(fnClient,Member)
 
-@fortniteClient.event
+@fnClient.event
 async def event_party_member_promote(old_leader, new_leader):
-    await party.event_party_member_promote(fortniteClient, old_leader,new_leader)
+    await party.event_party_member_promote(fnClient, old_leader,new_leader)
 
-@fortniteClient.event
+@fnClient.event
 async def event_party_message(Message):
-    await message.Command(fortniteClient, Message)
+    await message.Command(fnClient, Message)
 
-@fortniteClient.event
+@fnClient.event
 async def event_friend_message(Message):
-    await message.Command(fortniteClient, Message)
+    await message.Command(fnClient, Message)
 
-app = Flask(__name__)
 @app.route('/')
-def Home():
-    return "Follow @LupusLeaks on Twitter"
-Thread(target=app.run).start()
-Thread(target=UpdateCheck.CheckVersion).start()
-Thread(target=UpdateCheck.CheckItems).start()
+async def Home(req):
+    return response.text('Follow @LupusLeaks on Twitter')
 
+@app.post('/settings')
+async def patch_settings(request):
+    #Check for auth
+    if request.headers.get('X-Secret-Password'):
+        if ClientSettings.HeaderPassword:
+            if not ClientSettings.HeaderPassword == request.headers.get('X-Secret-Password'):
+                return response.json({"error":"Unauthorized"},status=401)
+    else:
+        return response.json({"error":"Bad request!"},status=400)
+
+    try:
+        NewSettings = json.loads(request.body)
+    except:
+        return response.json({"error":"Bad request!"},status=400)
+
+    try:
+        Settings = json.loads(open("Settings.json").read())
+        for Key,Value in NewSettings.items():
+            if Key in Settings:
+                Settings[Key] = Value
+        open("Settings.json","w+").write(json.dumps(Settings,indent=2))
+    except:
+        return response.json({"error":"Can't read the Settings file!"})
+    
+    return response.json(Settings)
+
+@app.get('/restart')
+async def refresh(request):
+    #Check for auth
+    Passwd = await Check.CheckPassword(ClientSettings,request)
+    if isinstance(Passwd, sanic.response.HTTPResponse): return Passwd
+
+    if not ClientSettings.Account.Email or not ClientSettings.Account.Password:
+        return response.json({"error":"Email adress or password was not found!"},status=404)
+    
+    fnClient.email = ClientSettings.Account.Email
+    fnClient.password = ClientSettings.Account.Password
+
+    try:
+        await fnClient.start()
+        await fnClient.wait_until_ready()
+    except fortnitepy.AuthException:
+        return response.json({"error":"Wrong Epic Games Account Credentials!"})
+    except:
+        return response.json({"error":"Something went wrong while logging in!"})
+    return response.json({"success":"Successfully restarted the fortnite client!"})
+
+@app.get('/status')
+async def status(request):
+    #Check for auth
+    Passwd = await Check.CheckPassword(ClientSettings,request)
+    if isinstance(Passwd, sanic.response.HTTPResponse): return Passwd
+
+    if not fnClient.is_ready():
+        return response.json({"started":fnClient.is_ready()})
+    else:
+        if len(fnClient.Clients.values()) > 0:
+            Friends = 0
+            for Client in fnClient.Clients.values():
+                Friends += len(Client.friends)
+            SubBots = [Client.user.display_name for Client in fnClient.Clients.values()]
+            return response.json({"MainBot":fnClient.user.display_name,'Friends':Friends,"Sub Bots":SubBots})
+        else:
+            return response.json({"started":fnClient.is_ready(),'Friends':len(fnClient.friends)})
+
+@app.get('/update')
+async def update(request):
+    return await Check.Update(ClientSettings,request)
+
+@app.get('/start')
+async def start(request):
+    #Check for auth
+
+    if not ClientSettings.Account.Email or not ClientSettings.Account.Password:
+        return response.json({"error":"Email adress or password was not found!"},status=404)
+
+    if fnClient.is_ready():
+        return response.json({"error":"The client is already ready!"},status=200)
+    
+    fnClient.email = ClientSettings.Account.Email
+    fnClient.password = ClientSettings.Account.Password
+    fnClient.Settings = ClientSettings
+    DC = await DefaultCosmetics.Cosmetics(ClientSettings)
+    fnClient.default_party_member_config = DC[0]
+    fnClient.default_party_config = DC[1]
+
+    try:
+        await fnClient.start()
+        await fnClient.wait_until_ready()
+    except fortnitepy.AuthException:
+        return response.json({"error":"Wrong Epic Games Account Credentials!"})
+    except:
+        return response.json({"error":"Something went wrong while logging in!"})
+    
+    fnClient.mainBotID = fnClient.user.id
+    Errors = False
+
+    for email,password in ClientSettings.Account.Sub_Accounts.items():
+        if "@" in email:
+            fnClient.tasks.append(MultipleClients.LoadAccount(fnClient,email,password))
+    if len(fnClient.tasks) > 0:
+        try:
+            await asyncio.wait(fnClient.tasks)
+        except:
+            Errors = True
+        
+        Friends = 0
+        for Client in fnClient.Clients.values():
+            Friends = fnClient.has_friend(Client.user.id)
+            if not Friends:
+                try:
+                    await fnClient.add_friend(Client.user.id)
+                except:
+                    pass
+            if fnClient.Settings.Control.OwnerIDs:
+                fnClient.Settings.Control.OwnerIDs += f',{Client.user.id}'
+            else:
+                fnClient.Settings.Control.FullAccessIDs += f',{Client.user.id}'
+            Client.starting = False
+            Friends += len(Client.friends)
+        SubBots = [Client.user.display_name for Client in fnClient.Clients.values()]
+        fnClient.tasks.clear()
+        return response.json({"MainBot":fnClient.user.display_name,'Friends':Friends,"Sub Bots":SubBots,'Errors':Errors})
+    
+    if fnClient.is_ready():
+        return response.json({'MainBot':fnClient.user.display_name,'Friends':len(fnClient.friends)})
+    else:
+        return response.json({"error":"Unknown"})
+
+loop=asyncio.get_event_loop()
+loop.create_task(app.create_server(host="127.0.0.1", port=8000, return_asyncio_server=True))
+if ClientSettings.Account.Email:
+    loop.create_task(fnClient.start())
 try:
-    fortniteClient.run()
-except fortnitepy.errors.AuthException:
-    print(colored("Invalid account credentials!","red"))
+    loop.run_forever()
+finally:
+    loop.stop()
