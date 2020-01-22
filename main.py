@@ -16,8 +16,8 @@ from sanic import Sanic,response,request
 
 OldSettings = json.loads(open("Settings.json").read())
 New = {}
-if OldSettings["Bot Version"] == "1.0.3" and not "Account" in OldSettings:
-    New["Bot Version"] = "1.0.3"
+if not "Account" in OldSettings:
+    New["Bot Version"] = "1.0.4"
     New["Default item search language"] = OldSettings["Default item search language"]
     New["Secret Password"] = OldSettings["Password"]
 
@@ -229,6 +229,8 @@ async def start(request):
 loop=asyncio.get_event_loop()
 loop.create_task(app.create_server(host="127.0.0.1", port=8000, return_asyncio_server=True))
 if ClientSettings.Account.Email:
+    fnClient.email = ClientSettings.Account.Email
+    fnClient.password = ClientSettings.Account.Password
     loop.create_task(fnClient.start())
 try:
     loop.run_forever()
