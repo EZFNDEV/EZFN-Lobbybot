@@ -38,7 +38,6 @@ async def Update(ClientSettings,request):
             if not "Settings.json" in fileName:
                 z.extract(fileName, '')
         open("Settings.json","w+").write(json.dumps(NewSettings,indent=2))
-        os.system("python3 main.py")
         sys.exit()
     else:
         return response.json({"error":"Bad request!"},status=400)
