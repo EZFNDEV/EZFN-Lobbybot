@@ -166,16 +166,7 @@ async def status(request):
 async def update(request):
     return await Check.Update(ClientSettings,request)
 
-@app.get('/start')
-async def start(request):
-    #Check for auth
-
-    if not ClientSettings.Account.Email or not ClientSettings.Account.Password:
-        return response.json({"error":"Email adress or password was not found!"},status=404)
-
-    if fnClient.is_ready():
-        return response.json({"error":"The client is already ready!"},status=200)
-    
+async def StartBots():
     fnClient.email = ClientSettings.Account.Email
     fnClient.password = ClientSettings.Account.Password
     fnClient.Settings = ClientSettings
@@ -190,7 +181,7 @@ async def start(request):
         return response.json({"error":"Wrong Epic Games Account Credentials!"})
     except:
         return response.json({"error":"Something went wrong while logging in!"})
-    
+
     fnClient.mainBotID = fnClient.user.id
     Errors = False
 
@@ -221,17 +212,28 @@ async def start(request):
         fnClient.tasks.clear()
         return response.json({"MainBot":fnClient.user.display_name,'Friends':Friends,"Sub Bots":SubBots,'Errors':Errors})
     
+@app.get('/start')
+async def start(request):
+    #Check for auth
+
+    if not ClientSettings.Account.Email or not ClientSettings.Account.Password:
+        return response.json({"error":"Email adress or password was not found!"},status=404)
+
+    if fnClient.is_ready():
+        return response.json({"error":"The client is already ready!"},status=200)
+
+    Status = await StartBots()
+    if isinstance(Status, sanic.response.HTTPResponse): return Status
+
     if fnClient.is_ready():
         return response.json({'MainBot':fnClient.user.display_name,'Friends':len(fnClient.friends)})
     else:
         return response.json({"error":"Unknown"})
 
-loop=asyncio.get_event_loop()
+loop = asyncio.get_event_loop()
 loop.create_task(app.create_server(host="127.0.0.1", port=8000, return_asyncio_server=True))
-if ClientSettings.Account.Email:
-    fnClient.email = ClientSettings.Account.Email
-    fnClient.password = ClientSettings.Account.Password
-    loop.create_task(fnClient.start())
+if ClientSettings.Account.Email != "YOUR_EMAIL" and "@" in ClientSettings.Account.Email:
+    loop.create_task(StartBots())
 try:
     loop.run_forever()
 finally:

