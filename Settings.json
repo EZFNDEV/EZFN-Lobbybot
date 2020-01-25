@@ -1,41 +1,41 @@
 {
-  "Bot Version": "1.1.2",
-  "Default item search language": "en",
-  "Secret Password": "YOUR_PASSWORD",
-  "Account": {
-    "Email": "YOUR_EMAIL",
-    "Password": "YOUR_PASSWORD",
-    "Sub Accounts": {
-      "YOUR_SUB_EMAIL": "YOUR_SUB_PASSWORD",
-      "YOUR_SUB_EMAIL2": "YOUR_SUB_PASSWORD2"
-    }
-  },
-  "Control": {
-    "Give full access to": "FULL ACCESS IDS HERE",
-    "Bot owner IDs": "OWNER IDS HERE"
-  },
-  "Party": {
-    "Cosmetics": {
-      "Banner": {
-        "Banner Color": "defaultcolor15",
-        "Banner Name": "OtherBanner28",
-        "Season Level": 1000
-      },
-      "Skin": "Ghoul Trooper",
-      "Backpack": "",
-      "Pet": "",
-      "Pickaxe": "",
-      "Emote": "True Heart",
-      "Emoji": ""
+    "Bot Version": "1.1.4",
+    "Default item search language": "en",
+    "Secret Password": "YOUR_SECRET_PASSWORD",
+    "Account": {
+      "Email": "YOUR_EMAIL",
+      "Password": "YOUR_PASSWORD",
+      "Sub Accounts": {
+        "YOUR_SUB_EMAIL": "YOUR_SUB_PASSWORD",
+        "YOUR_SUB_EMAIL2": "YOUR_SUB_PASSWORD2"
+      }
     },
-    "Privacy": "Public",
-    "Platform": "Playstation",
-    "Join party on invitation": true
-  },
-  "Friends": {
-    "Accept all friend requests": true,
-    "Accept incoming friend requests": true,
-    "Invite friend on friend added": true,
-    "Send friend request on friend removed": true
+    "Control": {
+      "Give full access to": "ACCOUNT_ID,ACCOUNT_ID,ACCOUNT_ID",
+      "Public Bot": true
+    },
+    "Party": {
+      "Cosmetics": {
+        "Banner": {
+          "Banner Color": "defaultcolor15",
+          "Banner Name": "OtherBanner28",
+          "Season Level": 1000
+        },
+        "Skin": "Ghoul Trooper",
+        "Backpack": "",
+        "Pet": "",
+        "Pickaxe": "",
+        "Emote": "True Heart",
+        "Emoji": ""
+      },
+      "Privacy": "Public",
+      "Platform": "Playstation",
+      "Join party on invitation": true
+    },
+    "Friends": {
+      "Accept all friend requests": true,
+      "Accept incoming friend requests": true,
+      "Invite friend on friend added": true,
+      "Send friend request on friend removed": true
+    }
   }
-}

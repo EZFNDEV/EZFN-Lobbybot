@@ -1,14 +1,13 @@
 import fortnitepy,json
 
-from Fortnite.Events import friends,party,message
+from Fortnite.Event import friends,party,message
 
 async def LoadAccount(fnClient,Email,Password):
     client = fortnitepy.Client(email=Email,password=Password,platform=fnClient.platform,default_party_member_config=fnClient.default_party_member_config,status=fnClient.status,loop=fnClient.loop)
     
     client.Settings = fnClient.Settings
-    client.mainBotID = fnClient.mainBotID
-    client.Randomizing = False
-    client.starting = True
+    client.mainID = fnClient.mainID
+    client.randomizing = False
     client.RemovingFriends = False
 
     @client.event
@@ -42,7 +41,7 @@ async def LoadAccount(fnClient,Email,Password):
     @client.event
     async def event_friend_message(Message):
         await message.Command(client, Message)
-    
+
     try:
         fnClient.loop.create_task(client.start())
         await client.wait_until_ready()

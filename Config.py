@@ -1,6 +1,5 @@
 Languages = ["ar","de","es-419","es","en","fr","it","ja","ko","pl","pt-BR","ru","tr","zh-CN","zh-Hant"]
 Status = "Join my Discord\nIf you want your own bot\nhttps://discord.gg/jxgZH6Z\nOr Follow me on Twitter\n@LupusLeaks"
-OlisBots = ["ed62aeef963d4fcdb6d732527ae13be7","773f993a56a34b66bb859c8f6814364e","b2222e370ca34a88ad8a45b6a54a7227","06c382dde8dc460c8eeb0e58371f29f6","748ad338f76546b18f510928ea733e61","bc1f8c66865845de8ebbe33b2f0ad1a6","c1b4b01549ac45da82cc4d6e38a33171","7c6e52153961420597d2e5954c1b7ef9"]
 
 class ConfigReader():
     def __init__(self,Settings):
@@ -10,7 +9,7 @@ class ConfigReader():
             Sub_Accounts = Settings["Account"]["Sub Accounts"]
         class Control():
             FullAccessIDs = Settings["Control"]["Give full access to"]
-            OwnerIDs = Settings["Control"]["Bot owner IDs"]
+            Public_Bot = Settings["Control"]["Public Bot"]
         class Party():
             JoinOnInvite = Settings["Party"]["Join party on invitation"]
             Platfrom = Settings["Party"]["Platform"]
@@ -18,13 +17,13 @@ class ConfigReader():
             class Cosmetics():
                 Skin = Settings["Party"]["Cosmetics"]["Skin"]
                 #Skin_Variants = Settings["Party"]["Cosmetics"]["Skin Variants"]
-                Backpack = Settings["Party"]["Cosmetics"]["Skin"]
+                Backpack = Settings["Party"]["Cosmetics"]["Backpack"]
                 #Backpack_Variants = Settings["Party"]["Cosmetics"]["Backpack Variants"]
-                Pet = Settings["Party"]["Cosmetics"]["Skin"]
+                Pet = Settings["Party"]["Cosmetics"]["Pet"]
                 #Pet_Variants = Settings["Party"]["Cosmetics"]["Pet Variants"]
-                Pickaxe = Settings["Party"]["Cosmetics"]["Skin"]
-                Emote = Settings["Party"]["Cosmetics"]["Skin"]
-                Emoji = Settings["Party"]["Cosmetics"]["Skin"]
+                Pickaxe = Settings["Party"]["Cosmetics"]["Pickaxe"]
+                Emote = Settings["Party"]["Cosmetics"]["Emote"]
+                Emoji = Settings["Party"]["Cosmetics"]["Emoji"]
                 class Banner():
                     Color = Settings["Party"]["Cosmetics"]["Banner"]["Banner Color"]
                     Level = Settings["Party"]["Cosmetics"]["Banner"]["Season Level"]
