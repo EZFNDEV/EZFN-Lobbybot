@@ -4,11 +4,13 @@ from Fortnite import fortniteAPI
 
 async def event_party_invite(self, invitation):
     if not self.Settings.Control.Public_Bot:
-        if not invitation.sender.id in self.Settings.Control.FullAccessIDs:
-            try:
-                await invitation.decline()
-            except:
-                pass
+        if not self.Settings.Party.JoinOnInvite:
+            if not invitation.sender.id in self.Settings.Control.FullAccessIDs:
+                try:
+                    await invitation.decline()
+                except:
+                    pass
+                return
 
     try:
         await self.user.party.me.set_emote('EID_Wave')
@@ -29,7 +31,7 @@ async def event_party_member_join(self, Member):
         if self.Settings.Party.Cosmetics.Emote:
             Emote = await fortniteAPI.GetEmote(self.Settings.Party.Cosmetics.Emote,self.Settings.DefaultSearchLang)
             if Emote:
-                await self.user.party.me.set_emote(asset=f'{str(Emote["path"]).replace("FortniteGame/Content","/Game")}.{Emote["id"]}')
+                return await self.user.party.me.set_emote(asset=f'{str(Emote["path"]).replace("FortniteGame/Content","/Game")}.{Emote["id"]}')
 
         #Emoji
         if self.Settings.Party.Cosmetics.Emoji:

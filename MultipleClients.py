@@ -1,9 +1,9 @@
-import fortnitepy,json
+import fortnitepy,json,Config
 
 from Fortnite.Event import friends,party,message
 
 async def LoadAccount(fnClient,Email,Password):
-    client = fortnitepy.Client(email=Email,password=Password,platform=fnClient.platform,default_party_member_config=fnClient.default_party_member_config,status=fnClient.status,loop=fnClient.loop)
+    client = fortnitepy.Client(email=Email,password=Password,platform=fnClient.platform,default_party_member_config=fnClient.default_party_member_config,status='Discord: https://discord.gg/jxgZH6Z\nTwitter: @LupusLeaks\nGET YOUR OWN BOT FOR FREE!',loop=fnClient.loop)
     
     client.Settings = fnClient.Settings
     client.mainID = fnClient.mainID

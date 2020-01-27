@@ -32,19 +32,14 @@ async def Cosmetics(Settings):
     if Settings.Party.Cosmetics.Backpack and not Settings.Party.Cosmetics.Pet:
         Backpack = await fortniteAPI.GetBackpack(Settings.Party.Cosmetics.Backpack,Settings.DefaultSearchLang)
         if Backpack:
-            v = []
-            #if type(Settings.Party.Cosmetics.Backpack_Variants) == list:
-                #v = Settings.Party.Cosmetics.Backpack_Variants
-        
+            v = Settings.Party.Cosmetics.Backpack_Variants
             default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Backpack["path"]).replace("FortniteGame/Content","/Game")}.{Backpack["id"]}',variants=v))
 
     #Skin
     if Settings.Party.Cosmetics.Skin:
         Skin = await fortniteAPI.GetSkin(Settings.Party.Cosmetics.Skin,Settings.DefaultSearchLang)
         if Skin:
-            v = []
-            #if type(Settings.Party.Cosmetics.Skin_Variants) == list:
-                #v = Settings.Party.Cosmetics.Skin_Variants
+            v = Settings.Party.Cosmetics.Skin_Variants
         
             default_party_member.append(partial(fortnitepy.ClientPartyMember.set_outfit,asset=f'{str(Skin["path"]).replace("FortniteGame/Content","/Game")}.{Skin["id"]}',variants=v))
 
@@ -58,9 +53,7 @@ async def Cosmetics(Settings):
     if Settings.Party.Cosmetics.Pet:
         Pet = await fortniteAPI.GetPet(Settings.Party.Cosmetics.Pet,Settings.DefaultSearchLang)
         if Pet:
-            v = []
-            #if type(Settings.Party.Cosmetics.Pet_Variants) == list:
-               #v = Settings.Party.Cosmetics.Pet_Variants
+            v = Settings.Party.Cosmetics.Pet_Variants
         
             default_party_member.append(partial(fortnitepy.ClientPartyMember.set_backpack,asset=f'{str(Pet["path"]).replace("FortniteGame/Content","/Game")}.{Pet["id"]}',variants=v))
 

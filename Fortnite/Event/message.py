@@ -23,6 +23,12 @@ async def Command(self, message):
 
     if any(CosmeticCommand in msg for CosmeticCommand in ["!SKIN","!BACKPACK","!PICKAXE","!EMOJI","!EMOTE"]):
         await SetCosmetics.SetCosmeticMSG(self,message)
+    elif args[0] == "!SAY" and HasFullAccess:
+        try:
+            await self.user.party.send(msg[5:])
+            await message.reply('Message sent')
+        except:
+            await message.reply('Something went wrong while sending the message...')
     elif args[0] == "!MESSAGEALLBOTS" and HasFullAccess:
         for Client in self.Clients.values():
             if Client.user.id != self.user.id:

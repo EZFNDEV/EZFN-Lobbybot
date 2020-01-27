@@ -13,20 +13,21 @@ from Fortnite.Event import friends,party,message
 
 app = Sanic('EasyFNLobbyBot')
 fnClient = fortnitepy.Client(email=None,password=None)
+ClientSettings = Config.ConfigReader(json.loads(open("Settings.json").read()))
 fnClient.Clients = {}
 fnClient.randomizing = False
 fnClient.RemovingFriends = False
-
 
 @fnClient.event
 async def event_ready():
     print("Fortnite Client is now ready!")
     fnClient.mainID = fnClient.user.id
+    fnClient.SubAccountCount = len([Email for Email in fnClient.Settings.Account.Sub_Accounts if "@" in Email])
 
-    if len(fnClient.Settings.Account.Sub_Accounts) > 0:
+    if fnClient.SubAccountCount > 0:
         tasks = []
         for email,password in fnClient.Settings.Account.Sub_Accounts.items():
-            if "@" in email:
+            if "@" in email and len(tasks) < 10:
                 tasks.append(MultipleClients.LoadAccount(fnClient,email,password))
         
         try:
@@ -80,6 +81,7 @@ async def StartFNClient():
     fnClient.email = ClientSettings.Account.Email
     fnClient.password = ClientSettings.Account.Password
     fnClient.Settings = ClientSettings
+    fnClient.status = Config.Status
     DC = await DefaultCosmetics.Cosmetics(ClientSettings)
     fnClient.default_party_member_config = DC[0]
     fnClient.default_party_config = DC[1]
@@ -87,11 +89,12 @@ async def StartFNClient():
     try:
         await fnClient.start()
         await fnClient.wait_until_ready()
-    except fortnitepy.AuthException:
+    except fortnitepy.AuthException as e:
+        if "errors.com.epicgames.accountportal.captcha_invalid" in str(e):
+            return response.json({"error":"errors.com.epicgames.accountportal.captcha_invalid"})
         return response.json({"error":"Wrong Epic Games Account Credentials!"})
-    except:
-        return response.json({"error":"Something went wrong while logging in!"})
-    return response.json({"success":"Successfully restarted the fortnite client!"})
+    except Exception as e:
+        return response.json({"error":"Something went wrong while logging in!","errorMessage":e})
 
 async def Authenticate(request):
     ClientSettings = Config.ConfigReader(json.loads(open("Settings.json").read()))
@@ -131,12 +134,28 @@ async def Update(ClientSettings,request):
     open("Settings.json","w+").write(json.dumps(NewSettings,indent=2))
     sys.exit()
 
+@app.route('/settings')
+async def settings(request):
+    settings = await Authenticate(request)
+    if isinstance(settings, response.HTTPResponse): return settings
+    Settings = json.loads(open("Settings.json").read())
+
+    if request.body:
+        try:
+            newbody = json.loads(request.body)
+        except:
+            return response.json({"error":"Bad request!"})
+        open("Settings.json","w+").write(json.dumps(newbody,indent=2))
+        sys.exit()
+    else:
+        return response.json(Settings)
+
 @app.route('/status')
 async def status(request):
     Status = await Authenticate(request)
     if isinstance(Status, response.HTTPResponse): return Status
 
-    data = {"mainClient":{"is_ready":fnClient.is_ready(),"friends":len(fnClient.friends)}}
+    data = {"mainClient":{"is_ready":fnClient.is_ready(),"displayName":fnClient.user.display_name,"friends":len(fnClient.friends)}}
     if len(fnClient.Clients) > 0:
         data["SubClients"] = {}
         for Client in fnClient.Clients.values():
@@ -159,10 +178,11 @@ async def restart(request):
     ReStart = await Authenticate(request)
     if isinstance(ReStart, response.HTTPResponse): return ReStart
 
-    if not fnClient.is_ready():
-        return response.json({"error":"The client is not ready!"},status=200)
-
+    for client in fnClient.Clients.values():
+        await client.logout()
     await fnClient.logout()
+    await asyncio.sleep(0.5)
+
     return await StartFNClient()
 
 @app.route('/restartall')
@@ -177,12 +197,16 @@ async def stop(request):
     Stop = await Authenticate(request)
     if isinstance(Stop, response.HTTPResponse): return Stop
 
-    await fnClient.logout(close_http=True)
+    for client in fnClient.Clients.values():
+        await client.logout()
+    await fnClient.logout()
     return response.json({"success":"Logged out!"})
 
 #Start Server
 loop = asyncio.get_event_loop()
 loop.create_task(app.create_server(host="127.0.0.1", port=8000, return_asyncio_server=True))
+if ClientSettings.AutoStart:
+    loop.create_task(StartFNClient())
 try:
     loop.run_forever()
 finally:
