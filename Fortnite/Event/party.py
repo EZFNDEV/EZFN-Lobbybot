@@ -4,14 +4,21 @@ from Fortnite import fortniteAPI
 
 async def event_party_invite(self, invitation):
     if not self.Settings.Control.Public_Bot:
-        if not self.Settings.Party.JoinOnInvite:
-            if not invitation.sender.id in self.Settings.Control.FullAccessIDs:
-                try:
-                    await invitation.decline()
-                except:
-                    pass
-                return
+        if not invitation.sender.id in self.Settings.Control.FullAccessIDs:
+            try:
+                await invitation.decline()
+            except:
+                pass
+            return
 
+    if not self.Settings.Party.JoinOnInvite:
+        if not invitation.sender.id in self.Settings.Control.FullAccessIDs:
+            try:
+                await invitation.decline()
+            except:
+                pass
+            return
+    
     try:
         await self.user.party.me.set_emote('EID_Wave')
         await asyncio.sleep(2)
