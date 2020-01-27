@@ -112,7 +112,7 @@ async def Home(request):
     return response.text('Follow @LupusLeaks on Twitter')
 
 @app.route('/update')
-async def Update(ClientSettings,request):
+async def Update(request):
     update = await Authenticate(request)
     if isinstance(update, response.HTTPResponse): return update
     
