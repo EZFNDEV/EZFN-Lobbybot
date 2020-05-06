@@ -1,5 +1,0 @@
-requests==2.22.0
-termcolor==1.1.0
-aiofiles==0.4.0
-sanic==19.12.2
-fortnitepy==1.3.1
