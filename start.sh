@@ -1,2 +1,2 @@
-pip3 install --user -r -U requirements.txt
+pip3 install --user --upgrade EasyFNSetup
 python3 main.py
