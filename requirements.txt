@@ -1,1 +1,1 @@
-EasyFNSetup
+ezfnSetup
