@@ -1,3 +1,4 @@
+[![Run on Repl.it](https://repl.it/badge/github/LupusLeaks/EasyFN)](https://repl.it/github/LupusLeaks/EasyFN) 
 # Welcome 🥳
 
 EasyFN is a free Fortnite Lobbybot which allows you to see all Fortnite cosmetics.  
