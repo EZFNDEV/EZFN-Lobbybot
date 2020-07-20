@@ -3,10 +3,10 @@
 EasyFN is a free Fortnite Lobbybot which allows you to see all Fortnite cosmetics.  
 
 ## Important
-### IF YOUR BOT GOES OFFLINE GO TO THIS PROJECT AND PRESS RUN
-Check out "settings.yml" and "commands.json" to customize your bot :)
+This Project is currently downloading the needed files!  
+This process may take a few minutes, if it takes more than 5 Minutes you may have to **refresh** the site!
 
 ## Get Help
-<a href="https://ezfn.net/discord"><img src="https://discordapp.com/api/guilds/727605653668888649/widget.png?style=banner4"></a>
+[Join my Discord](https://ezfn.net/discord)
 
 <sub>If you see this on github.com, visit [my website](https://ezfn.net)...</sub>
